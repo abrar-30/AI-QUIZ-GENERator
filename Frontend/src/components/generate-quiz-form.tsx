@@ -12,34 +12,72 @@ export default function GenerateQuizForm() {
   const [maxScore, setMaxScore] = useState(100)
   const [difficulty, setDifficulty] = useState<"EASY" | "MEDIUM" | "HARD">("MEDIUM")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const navigate = useNavigate()
+
+  // Updated validation function
+  function validate(): boolean {
+    const errors: Record<string, string> = {};
+    const numericGrade = Number(grade);
+    
+    // --- New Grade Validation ---
+    if (!grade) {
+      errors.grade = "Grade level is required and must be a valid number.";
+    } else if (isNaN(numericGrade)) {
+      errors.grade = "Grade must be a valid number.";
+    } else if (numericGrade < 1 || numericGrade > 16) {
+      // Allows for K-12 and 4 years of college
+      errors.grade = "Grade must be between 1 and 16.";
+    }
+    // --- End New Grade Validation ---
+    
+    if (!subject) {
+      errors.subject = "Subject is required.";
+    }
+    if (totalQuestions < 1 || totalQuestions > 50) {
+      errors.totalQuestions = "Must be between 1 and 50 questions.";
+    }
+    if (maxScore < 1 || maxScore > 1000) {
+      errors.maxScore = "Max score must be between 1 and 1000.";
+    }
+    
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
-    setError(null)
+    setFieldErrors({})
+
+    if (!validate()) {
+      return
+    }
+    
     setLoading(true)
     try {
-      const res = await createQuiz({ grade, subject, totalQuestions, maxScore, difficulty })
+      const res = await createQuiz({ 
+        // Send the grade as a string, as that's what the state holds
+        grade: grade, 
+        subject, 
+        totalQuestions, 
+        maxScore, 
+        difficulty 
+      })
       navigate(`/quiz/${res.quizId}`)
     } catch (err: any) {
-      setError(err.message || "Failed to generate quiz")
+      setFieldErrors({ api: err.message || "Failed to generate quiz" })
     } finally {
       setLoading(false)
     }
   }
 
-  // The 'styles' object and all hover/focus handlers have been removed.
-  // All styling is now in the <style> block below.
-
   return (
-    // Use a React Fragment <> as the root
     <>
-      {/* Main Form (no header or container) */}
       <form 
         onSubmit={onSubmit} 
-        className="quiz-form" // Replaced 'generate-quiz-form'
+        className="quiz-form"
         aria-label="Generate quiz form"
+        noValidate 
       >
         {/* Grade Input */}
         <div className="input-group">
@@ -49,12 +87,18 @@ export default function GenerateQuizForm() {
           </label>
           <input
             id="grade"
+            type="number" // <-- Changed type
+            min={1}        // <-- Added min
+            max={16}       // <-- Added max
             className="input-field"
             value={grade}
             onChange={(e) => setGrade(e.target.value)}
-            placeholder="e.g., 6th Grade, High School, College"
+            placeholder="e.g., 6, 9, 12" // <-- Changed placeholder
             required
+            aria-invalid={!!fieldErrors.grade}
+            aria-describedby="grade-error"
           />
+          {fieldErrors.grade && <p id="grade-error" className="error-text">{fieldErrors.grade}</p>}
         </div>
 
         {/* Subject Input */}
@@ -70,7 +114,10 @@ export default function GenerateQuizForm() {
             onChange={(e) => setSubject(e.target.value)}
             placeholder="e.g., Biology, Mathematics, History"
             required
+            aria-invalid={!!fieldErrors.subject}
+            aria-describedby="subject-error"
           />
+          {fieldErrors.subject && <p id="subject-error" className="error-text">{fieldErrors.subject}</p>}
         </div>
 
         {/* Total Questions */}
@@ -86,8 +133,11 @@ export default function GenerateQuizForm() {
             max={50}
             className="input-field"
             value={totalQuestions}
-            onChange={(e) => setTotalQuestions(Number.parseInt(e.target.value || "1"))}
+            onChange={(e) => setTotalQuestions(Number(e.target.value))}
+            aria-invalid={!!fieldErrors.totalQuestions}
+            aria-describedby="questions-error"
           />
+          {fieldErrors.totalQuestions && <p id="questions-error" className="error-text">{fieldErrors.totalQuestions}</p>}
         </div>
 
         {/* Max Score */}
@@ -103,8 +153,11 @@ export default function GenerateQuizForm() {
             max={1000}
             className="input-field"
             value={maxScore}
-            onChange={(e) => setMaxScore(Number.parseInt(e.target.value || "100"))}
+            onChange={(e) => setMaxScore(Number(e.target.value))}
+            aria-invalid={!!fieldErrors.maxScore}
+            aria-describedby="score-error"
           />
+          {fieldErrors.maxScore && <p id="score-error" className="error-text">{fieldErrors.maxScore}</p>}
         </div>
 
         {/* Difficulty Select */}
@@ -125,11 +178,11 @@ export default function GenerateQuizForm() {
           </select>
         </div>
 
-        {/* Error Display */}
-        {error && (
+        {/* Error Display for API errors */}
+        {fieldErrors.api && (
           <div className="error-message form-full-width" role="alert">
             <AlertCircle size={18} />
-            {error}
+            {fieldErrors.api}
           </div>
         )}
 
@@ -188,7 +241,7 @@ export default function GenerateQuizForm() {
         </div>
       </div>
 
-      {/* Add CSS for spinner animation */}
+      {/* CSS Styles */}
       <style>
         {`
           @keyframes spin {
@@ -199,7 +252,21 @@ export default function GenerateQuizForm() {
             animation: spin 1s linear infinite;
           }
 
-          /* --- Base Styles (Desktop) --- */
+          .error-text {
+            color: #dc2626; /* Red-600 */
+            font-size: 0.875rem; /* 14px */
+            margin-top: -0.25rem; 
+          }
+          
+          .input-field[aria-invalid="true"] {
+            border-color: #dc2626;
+          }
+          .input-field[aria-invalid="true"]:focus {
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+          }
+
+          /* Base Styles (Desktop) */
           .quiz-form {
             background: white;
             padding: 3rem;
@@ -236,12 +303,23 @@ export default function GenerateQuizForm() {
             padding: 1rem 1.25rem;
             border: 2px solid #e5e7eb;
             border-radius: 12px;
-            font-size: 16px; /* Prevents iOS zoom */
+            font-size: 16px; 
             transition: all 0.3s ease;
             background: white;
             width: 100%;
             box-sizing: border-box;
           }
+          
+          /* Hide number input spinners */
+          .input-field[type="number"] {
+            -moz-appearance: textfield;
+          }
+          .input-field[type="number"]::-webkit-outer-spin-button,
+          .input-field[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+
           .select-field {
             cursor: pointer;
             appearance: none;
@@ -250,12 +328,12 @@ export default function GenerateQuizForm() {
             background-position: right 1rem center;
             background-size: 8px 10px;
           }
-          .input-field:hover,
-          .select-field:hover {
+          .input-field:not([aria-invalid="true"]):hover,
+          .select-field:not([aria-invalid="true"]):hover {
             border-color: #9ca3af;
           }
-          .input-field:focus,
-          .select-field:focus {
+          .input-field:not([aria-invalid="true"]):focus,
+          .select-field:not([aria-invalid="true"]):focus {
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
             outline: none;
@@ -307,7 +385,7 @@ export default function GenerateQuizForm() {
             box-shadow: none;
           }
 
-          /* --- Feature Grid --- */
+          /* Feature Grid */
           .feature-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -345,12 +423,15 @@ export default function GenerateQuizForm() {
             line-height: 1.5;
           }
 
-          /* --- Tablet & Large Phone Styles --- */
+          /* Tablet & Large Phone */
           @media (max-width: 768px) {
             .quiz-form {
-              grid-template-columns: 1fr; /* Stack form fields */
+              grid-template-columns: 1fr; 
               padding: 1.5rem;
               gap: 1.5rem;
+            }
+            .input-group {
+              gap: 0.5rem;
             }
             .submit-button {
               width: 100%;
@@ -366,10 +447,10 @@ export default function GenerateQuizForm() {
             }
           }
           
-          /* --- Small Mobile Styles --- */
+          /* Small Mobile */
           @media (max-width: 400px) {
             .quiz-form {
-              padding: 1.5rem 1rem; /* Reduce side padding */
+              padding: 1.5rem 1rem; 
             }
             .feature-card {
               padding: 1.25rem 1rem;
