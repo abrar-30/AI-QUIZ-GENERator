@@ -148,7 +148,7 @@ export function Navbar() {
           <div style={styles.brandIcon}>
             <Award size={24} />
           </div>
-          AI QuizMaster
+          Quiz Ai
         </Link>
         
         <nav style={styles.navlinks} aria-label="Primary">
