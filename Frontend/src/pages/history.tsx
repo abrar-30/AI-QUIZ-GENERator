@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { retryQuiz, useHistory, swrConfig } from "../lib/api"
 import { Link } from "react-router-dom"
-import { 
-  History, 
-  Search, 
-  Calendar, 
-  BookOpen, 
-  TrendingUp, 
-  RefreshCw, 
+import {
+  History,
+  Search, // This import is unused, but left as-is from your original code
+  Calendar,
+  BookOpen,
+  TrendingUp,
+  RefreshCw,
   ExternalLink,
   Filter,
   Award,
@@ -29,7 +29,7 @@ export default function HistoryPage() {
     window.location.href = `/quiz/${res.quizId}`
   }
 
-  // Inline styles object
+  // Inline styles object (unchanged)
   const styles = {
     container: {
       maxWidth: "1200px",
@@ -81,7 +81,8 @@ export default function HistoryPage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      color: "white"
+      color: "white",
+      flexShrink: 0 // Added for mobile robustness
     },
     statContent: {
       display: "flex",
@@ -128,7 +129,7 @@ export default function HistoryPage() {
       padding: "0.875rem 1rem",
       border: "2px solid #e5e7eb",
       borderRadius: "8px",
-      fontSize: "1rem",
+      fontSize: "1rem", // 16px to prevent iOS zoom
       transition: "all 0.3s ease",
       background: "white",
       width: "100%",
@@ -166,7 +167,7 @@ export default function HistoryPage() {
       background: "white",
       borderRadius: "16px",
       boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-      overflow: "hidden"
+      overflow: "hidden" // Keeps rounded corners
     },
     table: {
       width: "100%",
@@ -278,7 +279,7 @@ export default function HistoryPage() {
     }
   }
 
-  // Helper functions
+  // Helper functions (unchanged)
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
     e.target.style.borderColor = "#667eea"
     e.target.style.boxShadow = "0 0 0 3px rgba(102, 126, 234, 0.1)"
@@ -307,10 +308,10 @@ export default function HistoryPage() {
     e.currentTarget.style.backgroundColor = "transparent"
   }
 
-  // Calculate stats from data
+  // Calculate stats from data (unchanged)
   const stats = {
     totalAttempts: Array.isArray(data) ? data.length : 0,
-    averageScore: Array.isArray(data) && data.length > 0 
+    averageScore: Array.isArray(data) && data.length > 0
       ? Math.round(data.reduce((acc, item) => acc + (item.score || 0), 0) / data.length)
       : 0,
     bestScore: Array.isArray(data) && data.length > 0
@@ -318,7 +319,7 @@ export default function HistoryPage() {
       : 0
   }
 
-  // Get score color based on value
+  // Get score color based on value (unchanged)
   const getScoreColor = (score: number) => {
     if (score >= 80) return styles.scoreHigh
     if (score >= 60) return styles.scoreMedium
@@ -326,10 +327,18 @@ export default function HistoryPage() {
   }
 
   return (
-    <section style={styles.container} aria-labelledby="history-title">
+    <section 
+      style={styles.container} 
+      className="history-container" // Added class
+      aria-labelledby="history-title"
+    >
       {/* Header */}
       <div style={styles.header}>
-        <h1 id="history-title" style={styles.title}>
+        <h1 
+          id="history-title" 
+          style={styles.title} 
+          className="history-title" // Added class
+        >
           <History size={32} />
           Quiz History
         </h1>
@@ -337,7 +346,7 @@ export default function HistoryPage() {
 
       {/* Stats Overview */}
       <div style={styles.statsGrid}>
-        <div style={styles.statCard}>
+        <div style={styles.statCard} className="stat-card"> {/* Added class */}
           <div style={styles.statIcon}>
             <FileText size={24} />
           </div>
@@ -346,7 +355,7 @@ export default function HistoryPage() {
             <div style={styles.statLabel}>Total Attempts</div>
           </div>
         </div>
-        <div style={styles.statCard}>
+        <div style={styles.statCard} className="stat-card"> {/* Added class */}
           <div style={styles.statIcon}>
             <TrendingUp size={24} />
           </div>
@@ -355,7 +364,7 @@ export default function HistoryPage() {
             <div style={styles.statLabel}>Average Score</div>
           </div>
         </div>
-        <div style={styles.statCard}>
+        <div style={styles.statCard} className="stat-card"> {/* Added class */}
           <div style={styles.statIcon}>
             <Award size={24} />
           </div>
@@ -367,7 +376,7 @@ export default function HistoryPage() {
       </div>
 
       {/* Filters */}
-      <div style={styles.filterCard}>
+      <div style={styles.filterCard} className="filter-card"> {/* Added class */}
         <div style={styles.inputGroup}>
           <label style={styles.label} htmlFor="filter-subject">
             <BookOpen style={styles.icon} />
@@ -413,9 +422,10 @@ export default function HistoryPage() {
             onBlur={handleInputBlur}
           />
         </div>
-        <div style={{ alignSelf: "end" }}>
+        <div style={{ alignSelf: "end" }} className="filter-button-wrapper"> {/* Added class */}
           <button
-            style={{...styles.button, ...styles.filterButton}}
+            style={{ ...styles.button, ...styles.filterButton }}
+            className="filter-button" // Added class
             onClick={() => mutate()}
             onMouseEnter={handleButtonHover}
             onMouseLeave={handleButtonLeave}
@@ -445,98 +455,212 @@ export default function HistoryPage() {
       {/* Table */}
       {!isLoading && !error && (
         <div style={styles.tableCard} aria-live="polite">
-          <table style={styles.table}>
-            <thead style={styles.tableHeader}>
-              <tr>
-                <th style={styles.tableHeaderCell}>Subject</th>
-                <th style={styles.tableHeaderCell}>Date & Time</th>
-                <th style={styles.tableHeaderCell}>Score</th>
-                <th style={styles.tableHeaderCell}>Attempt</th>
-                <th style={styles.tableHeaderCell}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(data) && data.length > 0 ? (
-                data.map((it: any) => (
-                  <tr 
-                    key={it.submissionId} 
-                    style={styles.tableRow}
-                    onMouseEnter={handleRowHover}
-                    onMouseLeave={handleRowLeave}
-                  >
-                    <td style={styles.tableCell}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <BookOpen size={16} color="#667eea" />
-                        {it.subject || "General"}
-                      </div>
-                    </td>
-                    <td style={styles.tableCell}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <Clock size={16} color="#6b7280" />
-                        {it.submittedAt ? new Date(it.submittedAt).toLocaleString() : "-"}
-                      </div>
-                    </td>
-                    <td style={styles.tableCell}>
-                      {typeof it.score === "number" ? (
-                        <div style={{...styles.scoreCell, ...getScoreColor(it.score)}}>
-                          <BarChart3 size={16} />
-                          {it.score}%
+          {/* Wrapper div for horizontal scrolling on *medium* tablets */}
+          {/* The CSS will stack it on small phones */}
+          <div style={{ overflowX: "auto" }}>
+            <table style={styles.table}>
+              <thead style={styles.tableHeader} className="history-table-head"> {/* Added class */}
+                <tr>
+                  <th style={styles.tableHeaderCell}>Subject</th>
+                  <th style={styles.tableHeaderCell}>Date & Time</th>
+                  <th style={styles.tableHeaderCell}>Score</th>
+                  <th style={styles.tableHeaderCell}>Attempt</th>
+                  <th style={styles.tableHeaderCell}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(data) && data.length > 0 ? (
+                  data.map((it: any) => (
+                    <tr
+                      key={it.submissionId}
+                      style={styles.tableRow}
+                      className="history-table-row" // Added class
+                      onMouseEnter={handleRowHover}
+                      onMouseLeave={handleRowLeave}
+                    >
+                      <td 
+                        style={styles.tableCell} 
+                        className="history-table-cell" // Added class
+                        data-label="Subject" // Added data-label for mobile
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          <BookOpen size={16} color="#667eea" />
+                          {it.subject || "General"}
                         </div>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                    <td style={styles.tableCell}>
-                      #{typeof it.attempt === "number" ? it.attempt : "-"}
-                    </td>
-                    <td style={styles.tableCell}>
-                      <div style={styles.actionCell}>
-                        <Link
-                          to={`/quiz/${it.quizId}`}
-                          style={{...styles.actionButton, ...styles.openButton}}
-                          onMouseEnter={handleButtonHover}
-                          onMouseLeave={handleButtonLeave}
-                        >
-                          <ExternalLink size={14} />
-                          Review
-                        </Link>
-                        <button
-                          style={{...styles.actionButton, ...styles.retryButton}}
-                          onClick={() => onRetry(it.quizId)}
-                          onMouseEnter={handleButtonHover}
-                          onMouseLeave={handleButtonLeave}
-                        >
-                          <RefreshCw size={14} />
-                          Retry
-                        </button>
+                      </td>
+                      <td 
+                        style={styles.tableCell} 
+                        className="history-table-cell" // Added class
+                        data-label="Date & Time" // Added data-label for mobile
+                      >
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          <Clock size={16} color="#6b7280" />
+                          {it.submittedAt ? new Date(it.submittedAt).toLocaleString() : "-"}
+                        </div>
+                      </td>
+                      <td 
+                        style={styles.tableCell} 
+                        className="history-table-cell" // Added class
+                        data-label="Score" // Added data-label for mobile
+                      >
+                        {typeof it.score === "number" ? (
+                          <div style={{ ...styles.scoreCell, ...getScoreColor(it.score) }}>
+                            <BarChart3 size={16} />
+                            {it.score}%
+                          </div>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td 
+                        style={styles.tableCell} 
+                        className="history-table-cell" // Added class
+                        data-label="Attempt" // Added data-label for mobile
+                      >
+                        #{typeof it.attempt === "number" ? it.attempt : "-"}
+                      </td>
+                      <td 
+                        style={styles.tableCell} 
+                        className="history-table-cell" // Added class
+                        data-label="Actions" // Added data-label for mobile
+                      >
+                        <div style={styles.actionCell} className="action-cell"> {/* Added class */}
+                          <Link
+                            to={`/quiz/${it.quizId}`}
+                            style={{ ...styles.actionButton, ...styles.openButton }}
+                            onMouseEnter={handleButtonHover}
+                            onMouseLeave={handleButtonLeave}
+                          >
+                            <ExternalLink size={14} />
+                            Review
+                          </Link>
+                          <button
+                            style={{ ...styles.actionButton, ...styles.retryButton }}
+                            onClick={() => onRetry(it.quizId)}
+                            onMouseEnter={handleButtonHover}
+                            onMouseLeave={handleButtonLeave}
+                          >
+                            <RefreshCw size={14} />
+                            Retry
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} style={styles.tableCell}>
+                      <div style={styles.emptyState} className="empty-state"> {/* Added class */}
+                        <FileText style={styles.emptyIcon} />
+                        <h3 style={{ color: "#374151", marginBottom: "0.5rem" }}>
+                          No quiz attempts found
+                        </h3>
+                        <p>Your quiz history will appear here once you start taking quizzes.</p>
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={5} style={styles.tableCell}>
-                    <div style={styles.emptyState}>
-                      <FileText style={styles.emptyIcon} />
-                      <h3 style={{ color: "#374151", marginBottom: "0.5rem" }}>
-                        No quiz attempts found
-                      </h3>
-                      <p>Your quiz history will appear here once you start taking quizzes.</p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
-      {/* Add CSS for spinner animation */}
+      {/* Add CSS for spinner animation AND media queries */}
       <style>
         {`
           @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+          }
+
+          /* --- Mobile Responsive Styles --- */
+          @media (max-width: 768px) {
+            .history-container {
+              padding: 1rem; /* Reduced padding */
+              gap: 1.5rem;
+            }
+
+            .history-title {
+              font-size: 1.8rem; /* Smaller title */
+              gap: 0.5rem;
+            }
+            
+            .stat-card {
+              padding: 1rem; /* Reduced card padding */
+            }
+            
+            .filter-card {
+              padding: 1.5rem; /* Reduced filter padding */
+              gap: 1rem;
+            }
+
+            .filter-button-wrapper {
+              grid-column: 1 / -1; /* Make button wrapper span full width */
+            }
+            
+            .filter-button {
+              width: 100%; /* Make button full-width */
+              padding-top: 1rem;
+              padding-bottom: 1rem;
+            }
+
+            /* --- Responsive Table --- */
+            .history-table-head {
+              display: none; /* Hide the desktop header */
+            }
+
+            .history-table-row {
+              display: block; /* Stack rows */
+              border-bottom: 2px solid #667eea;
+              margin-bottom: 1.5rem;
+              padding-bottom: 1rem;
+              background: white !important; /* Override hover style */
+            }
+            
+            .history-table-row:last-child {
+              margin-bottom: 0;
+              border-bottom: none;
+            }
+
+            .history-table-cell {
+              display: block; /* Stack cells */
+              padding: 0.75rem 1rem 0.75rem 45%; /* Make space for the label */
+              position: relative;
+              text-align: right; /* Align content to the right */
+              border-bottom: 1px dashed #e5e7eb; /* Separator lines */
+              width: 100%;
+              box-sizing: border-box;
+            }
+            
+            .history-table-cell:last-child {
+              border-bottom: none; /* No line for the last cell (actions) */
+            }
+
+            .history-table-cell::before {
+              content: attr(data-label); /* Get label from data-label */
+              position: absolute;
+              left: 1rem;
+              top: 50%;
+              transform: translateY(-50%);
+              font-weight: 600;
+              color: #374151;
+              text-align: left;
+              font-size: 0.9rem;
+            }
+
+            /* Align flex content to the right on mobile */
+            .history-table-cell > div {
+              justify-content: flex-end;
+            }
+            
+            .action-cell {
+              justify-content: flex-end; /* Push buttons to the right */
+            }
+            
+            .empty-state {
+              padding: 2rem 1rem; /* Smaller padding for empty state */
+            }
           }
         `}
       </style>
