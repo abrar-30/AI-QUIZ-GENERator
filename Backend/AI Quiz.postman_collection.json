@@ -1,0 +1,291 @@
+{
+	"info": {
+		"_postman_id": "b40eec3d-9e51-427c-9cd8-26f0e2b5b49d",
+		"name": "AI Quiz",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39456476"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"testuser\",\r\n  \"password\": \"12345\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/auth/login",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate Quiz",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzU4OTc1ODU2LCJleHAiOjE3NTkwNjIyNTZ9.HoBYUfDnK9J25g3UP8743PlcYCTrnl7OKCSBSl5HdXU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"grade\": 5,\r\n  \"subject\": \"Science\",\r\n  \"totalQuestions\": 5,\r\n  \"maxScore\": 10,\r\n  \"difficulty\": \"EASY\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/quiz/generate",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"quiz",
+						"generate"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Submit",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzU4OTc1ODU2LCJleHAiOjE3NTkwNjIyNTZ9.HoBYUfDnK9J25g3UP8743PlcYCTrnl7OKCSBSl5HdXU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"quizId\": \"68d7d798f22af5c315d3ea24\",\r\n  \"responses\": [\r\n    { \"questionId\": \"68d7d798f22af5c315d3ea29\", \"userResponse\": \"C\" },\r\n    { \"questionId\": \"68d7d798f22af5c315d3ea28\", \"userResponse\": \"B\" },\r\n    { \"questionId\": \"68d7d798f22af5c315d3ea27\", \"userResponse\": \"C\" },\r\n    { \"questionId\": \"68d7d798f22af5c315d3ea26\", \"userResponse\": \"D\" },\r\n    { \"questionId\": \"68d7d798f22af5c315d3ea25\", \"userResponse\": \"B\" }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/quiz/submit",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"quiz",
+						"submit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get History",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzU4OTc1ODU2LCJleHAiOjE3NTkwNjIyNTZ9.HoBYUfDnK9J25g3UP8743PlcYCTrnl7OKCSBSl5HdXU",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/quiz/history?grade=5&minScore=0&maxScore=10&minAttempt=1&maxAttempt=5&from=2025-01-01&to=2025-12-31",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"quiz",
+						"history"
+					],
+					"query": [
+						{
+							"key": "grade",
+							"value": "5"
+						},
+						{
+							"key": "minScore",
+							"value": "0"
+						},
+						{
+							"key": "maxScore",
+							"value": "10"
+						},
+						{
+							"key": "minAttempt",
+							"value": "1"
+						},
+						{
+							"key": "maxAttempt",
+							"value": "5"
+						},
+						{
+							"key": "from",
+							"value": "2025-01-01"
+						},
+						{
+							"key": "to",
+							"value": "2025-12-31"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retry",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzU4OTc1ODU2LCJleHAiOjE3NTkwNjIyNTZ9.HoBYUfDnK9J25g3UP8743PlcYCTrnl7OKCSBSl5HdXU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"quizId\": \"68d7d798f22af5c315d3ea24\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/quiz/retry",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"quiz",
+						"retry"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hint",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzU4OTc1ODU2LCJleHAiOjE3NTkwNjIyNTZ9.HoBYUfDnK9J25g3UP8743PlcYCTrnl7OKCSBSl5HdXU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"quizId\": \"68d7d798f22af5c315d3ea24\",\r\n  \"questionId\": \"68d7d798f22af5c315d3ea25\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/quiz/hint",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"quiz",
+						"hint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Mail",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzU4OTc1ODU2LCJleHAiOjE3NTkwNjIyNTZ9.HoBYUfDnK9J25g3UP8743PlcYCTrnl7OKCSBSl5HdXU",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"submissionId\": \"68d7d823f22af5c315d3ea33\",\r\n  \"email\": \"makwanajay925@gmail.com\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://quiz-ai-app-beta.vercel.app/quiz/send-result",
+					"protocol": "https",
+					"host": [
+						"quiz-ai-app-beta",
+						"vercel",
+						"app"
+					],
+					"path": [
+						"quiz",
+						"send-result"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

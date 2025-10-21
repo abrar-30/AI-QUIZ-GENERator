@@ -1,0 +1,151 @@
+/* Minimal design system with 4 colors, mobile-first, accessible contrast */
+:root {
+  --bg: #f9fafb;
+  --fg: #1f2937;
+  --muted: #f3f4f6;
+  --primary: #0ea5e9;
+  --accent: #f59e0b;
+  --radius: 0.5rem;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.app-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.navbar {
+  width: 100%;
+  background: var(--muted);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.navbar-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+.navlinks {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+
+a,
+button {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.btn {
+  background: var(--primary);
+  color: #001018;
+  border: none;
+  padding: .6rem .9rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn.secondary {
+  background: var(--accent);
+  color: #1a1000;
+}
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: var(--fg);
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  background: #ffffff;
+  color: var(--fg);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius);
+  padding: .6rem .7rem;
+  outline: none;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+  border-color: var(--primary);
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+.grid-2 {
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.label {
+  font-size: .9rem;
+  opacity: 0.9;
+  margin-bottom: .25rem;
+  display: inline-block;
+}
+.helper {
+  font-size: .8rem;
+  opacity: 0.8;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th,
+.table td {
+  padding: .6rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  text-align: left;
+}
+.table th {
+  opacity: 0.8;
+  font-weight: 600;
+}
